@@ -17,7 +17,7 @@ export default function AdminAuthModal({ isOpen, onClose, onLogin }: AdminAuthMo
     e.preventDefault();
     const normalizedEmail = email.toLowerCase().trim();
     const validEmails = ['kravinestudios@gmail.com', 'kravinestudios'];
-    if (validEmails.includes(normalizedEmail) && password === 'goofyahhbreathren123$') {
+    if (validEmails.includes(normalizedEmail) && password === 'niggasfrommiraroad') {
       localStorage.setItem('adminAuthenticated', 'true');
       onLogin();
     } else {
@@ -30,7 +30,7 @@ export default function AdminAuthModal({ isOpen, onClose, onLogin }: AdminAuthMo
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
       ></div>

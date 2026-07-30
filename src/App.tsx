@@ -172,7 +172,7 @@ export default function App() {
       {!isAuthenticated && (
         <button
           onClick={() => setShowAuthModal(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-full bg-[#12121a] border border-purple-500/30 text-purple-400 hover:text-white hover:border-purple-500/60 hover:bg-purple-500/10 transition-all duration-300 shadow-lg shadow-purple-900/30 hover:shadow-purple-500/20 group"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-full bg-[#12121a] border border-purple-500/30 text-purple-400 hover:text-white hover:border-purple-500/60 hover:bg-[#1a1a2e] transition-all duration-300 shadow-lg shadow-purple-900/30 hover:shadow-purple-500/20 group"
           aria-label="Admin Settings"
         >
           <Settings className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
