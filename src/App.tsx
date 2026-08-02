@@ -13,7 +13,8 @@ import ProjectsEditor from './components/ProjectsEditor';
 import TeamEditor from './components/TeamEditor';
 import StatsEditor from './components/StatsEditor';
 import SocialLinksEditor from './components/SocialLinksEditor';
-import { Settings } from 'lucide-react';
+import { Settings, Loader2 } from 'lucide-react';
+import { fetchContent, saveContent, supabase } from './lib/supabase';
 
 // Default data
 const defaultProjects = [
@@ -105,44 +106,69 @@ export default function App() {
   const [showStatsEditor, setShowStatsEditor] = useState(false);
   const [showSocialEditor, setShowSocialEditor] = useState(false);
 
-  const [projects, setProjects] = useState(() => {
-    const saved = localStorage.getItem('kravine_projects');
-    return saved ? JSON.parse(saved) : defaultProjects;
-  });
-  const [team, setTeam] = useState(() => {
-    const saved = localStorage.getItem('kravine_team');
-    return saved ? JSON.parse(saved) : defaultTeam;
-  });
-  const [stats, setStats] = useState(() => {
-    const saved = localStorage.getItem('kravine_stats');
-    return saved ? JSON.parse(saved) : defaultStats;
-  });
-  const [socialLinks, setSocialLinks] = useState(() => {
-    const saved = localStorage.getItem('kravine_social');
-    return saved ? JSON.parse(saved) : defaultSocialLinks;
-  });
+  const [projects, setProjects] = useState(defaultProjects);
+  const [team, setTeam] = useState(defaultTeam);
+  const [stats, setStats] = useState(defaultStats);
+  const [socialLinks, setSocialLinks] = useState(defaultSocialLinks);
+  const [isLoadingContent, setIsLoadingContent] = useState(true);
 
+  // Load all site content from Supabase on first mount so every visitor
+  // sees the same, admin-edited content (not just the person who edited it).
   useEffect(() => {
-    localStorage.setItem('kravine_projects', JSON.stringify(projects));
-  }, [projects]);
+    let cancelled = false;
 
-  useEffect(() => {
-    localStorage.setItem('kravine_team', JSON.stringify(team));
-  }, [team]);
+    async function loadAll() {
+      const [loadedProjects, loadedTeam, loadedStats, loadedSocial] = await Promise.all([
+        fetchContent('projects', defaultProjects),
+        fetchContent('team', defaultTeam),
+        fetchContent('stats', defaultStats),
+        fetchContent('social', defaultSocialLinks),
+      ]);
 
-  useEffect(() => {
-    localStorage.setItem('kravine_stats', JSON.stringify(stats));
-  }, [stats]);
-
-  useEffect(() => {
-    localStorage.setItem('kravine_social', JSON.stringify(socialLinks));
-  }, [socialLinks]);
-
-  useEffect(() => {
-    const auth = localStorage.getItem('adminAuthenticated');
-    if (auth === 'true') {
-      setIsAuthenticated(true);
+      if (cancelled) return;
+      setProjects(loadedProjects);
+      setTeam(loadedTeam);
+      setStats(loadedStats);
+      setSocialLinks(loadedSocial);
+      setIsLoadingContent(false);
     }
+
+    loadAll();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Wrapped setters: update local state immediately (so the admin sees the
+  // change right away) and persist to Supabase so everyone else gets it too.
+  const handleSaveProjects = async (next: typeof defaultProjects) => {
+    setProjects(next);
+    await saveContent('projects', next);
+  };
+  const handleSaveTeam = async (next: typeof defaultTeam) => {
+    setTeam(next);
+    await saveContent('team', next);
+  };
+  const handleSaveStats = async (next: typeof defaultStats) => {
+    setStats(next);
+    await saveContent('stats', next);
+  };
+  const handleSaveSocial = async (next: typeof defaultSocialLinks) => {
+    setSocialLinks(next);
+    await saveContent('social', next);
+  };
+
+  useEffect(() => {
+    // Restore session on load, and stay in sync if it expires/changes.
+    supabase.auth.getSession().then(({ data }) => {
+      setIsAuthenticated(!!data.session);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   const handleLogin = () => {
@@ -150,11 +176,18 @@ export default function App() {
     setShowAuthModal(false);
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
+  const handleLogout = async () => {
     setShowEditMenu(false);
-    localStorage.removeItem('adminAuthenticated');
+    await supabase.auth.signOut();
   };
+
+  if (isLoadingContent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
@@ -213,25 +246,25 @@ export default function App() {
         isOpen={showProjectsEditor}
         onClose={() => setShowProjectsEditor(false)}
         projects={projects}
-        onSave={setProjects}
+        onSave={handleSaveProjects}
       />
       <TeamEditor
         isOpen={showTeamEditor}
         onClose={() => setShowTeamEditor(false)}
         team={team}
-        onSave={setTeam}
+        onSave={handleSaveTeam}
       />
       <StatsEditor
         isOpen={showStatsEditor}
         onClose={() => setShowStatsEditor(false)}
         stats={stats}
-        onSave={setStats}
+        onSave={handleSaveStats}
       />
       <SocialLinksEditor
         isOpen={showSocialEditor}
         onClose={() => setShowSocialEditor(false)}
         links={socialLinks}
-        onSave={setSocialLinks}
+        onSave={handleSaveSocial}
       />
     </div>
   );

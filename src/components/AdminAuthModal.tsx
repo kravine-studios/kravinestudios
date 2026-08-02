@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Lock, Eye, EyeOff, X } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface AdminAuthModalProps {
   isOpen: boolean;
@@ -12,17 +13,28 @@ export default function AdminAuthModal({ isOpen, onClose, onLogin }: AdminAuthMo
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const normalizedEmail = email.toLowerCase().trim();
-    const validEmails = ['kravinestudios@gmail.com', 'kravinestudios'];
-    if (validEmails.includes(normalizedEmail) && password === 'niggasfrommiraroad') {
-      localStorage.setItem('adminAuthenticated', 'true');
-      onLogin();
-    } else {
+    setIsSubmitting(true);
+    setError('');
+
+    // Password is verified by Supabase's servers here — it never lives in
+    // this website's code or bundle, unlike the old hardcoded check.
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
+    setIsSubmitting(false);
+
+    if (signInError) {
       setError('Invalid credentials. Please try again.');
+      return;
     }
+
+    onLogin();
   };
 
   if (!isOpen) return null;
@@ -30,7 +42,7 @@ export default function AdminAuthModal({ isOpen, onClose, onLogin }: AdminAuthMo
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
+      <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
       ></div>
@@ -94,10 +106,11 @@ export default function AdminAuthModal({ isOpen, onClose, onLogin }: AdminAuthMo
 
           <button
             type="submit"
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold text-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-green-500/25 transition-all hover:-translate-y-0.5"
+            disabled={isSubmitting}
+            className="w-full py-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold text-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-green-500/25 transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Lock className="w-5 h-5" />
-            Sign In
+            {isSubmitting ? 'Signing In…' : 'Sign In'}
           </button>
         </form>
       </div>
