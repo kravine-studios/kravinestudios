@@ -6,7 +6,8 @@ export default function Contact() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', service: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState('');
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -22,12 +23,56 @@ export default function Contact() {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
-    setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
+  setIsSending(true);
+
+  const formPayload = {
+    access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || 'd08575c4-b240-4f7b-849e-1d733620cf2d',
+    subject: `New Contact from ${formData.name} - Kravine Studios`,
+    from_name: formData.name,
+    email: formData.email,
+    phone: formData.phone || 'Not provided',
+    service: formData.service || 'Not specified',
+    message: formData.message,
+    replyto: formData.email,
   };
+
+  console.log('🚀 Submitting form with payload:', formPayload);
+
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(formPayload),
+    });
+
+    console.log('📡 Response status:', response.status, response.statusText);
+    
+    const result = await response.json();
+    console.log('📨 Response data:', result);
+
+    if (response.ok && result.success) {
+      setIsSubmitted(true);
+      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+      setTimeout(() => setIsSubmitted(false), 5000);
+      console.log('✅ Form submitted successfully!');
+    } else {
+      const errorMsg = result.message || 'Failed to send message. Please try again.';
+      setError(errorMsg);
+      console.error('❌ Form submission failed:', result);
+    }
+  } catch (err) {
+    setError('Network error. Please check your connection and try again.');
+    console.error('❌ Fetch error:', err);
+  } finally {
+    setIsSending(false);
+  }
+};
 
   return (
     <section id="contact" className="relative py-24 sm:py-32 overflow-hidden">
@@ -55,6 +100,10 @@ export default function Contact() {
               <div className="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm flex items-center gap-2">
                 <MessageSquare className="w-5 h-5" />
                 Message sent successfully! We'll get back to you soon.
+              </div>
+            )}{error && (
+              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                {error}
               </div>
             )}
 
@@ -126,10 +175,11 @@ export default function Contact() {
 
             <button
               type="submit"
-              className="w-full btn-primary py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2"
+              disabled={isSending}
+              className="w-full btn-primary py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5" />
-              Send Message
+              {isSending ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>

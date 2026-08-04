@@ -118,6 +118,12 @@ export default function App() {
     let cancelled = false;
 
     async function loadAll() {
+      // Set a timeout to stop loading after 3 seconds even if Supabase fails
+      const timeoutId = setTimeout(() => {
+        if (cancelled) return;
+        setIsLoadingContent(false);
+      }, 3000);
+
       const [loadedProjects, loadedTeam, loadedStats, loadedSocial] = await Promise.all([
         fetchContent('projects', defaultProjects),
         fetchContent('team', defaultTeam),
@@ -125,6 +131,7 @@ export default function App() {
         fetchContent('social', defaultSocialLinks),
       ]);
 
+      clearTimeout(timeoutId);
       if (cancelled) return;
       setProjects(loadedProjects);
       setTeam(loadedTeam);
