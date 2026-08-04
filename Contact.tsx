@@ -35,25 +35,28 @@ export default function Contact() {
       body: JSON.stringify({
         access_key: 'd08575c4-b240-4f7b-849e-1d733620cf2d',
         subject: `New message from ${formData.name} — Kravine Studios`,
-        name: formData.name,
+        from_name: formData.name,
         email: formData.email,
         phone: formData.phone,
         service: formData.service,
         message: formData.message,
+        replyto: formData.email,
       }),
     });
 
     const result = await response.json();
 
-    if (result.success) {
+    if (response.ok && result.success) {
       setIsSubmitted(true);
       setTimeout(() => setIsSubmitted(false), 3000);
       setFormData({ name: '', email: '', phone: '', service: '', message: '' });
     } else {
-      setError('Something went wrong. Please try again.');
+      setError(result.message || 'Something went wrong. Please try again.');
+      console.error('Form submission error:', result);
     }
-  } catch {
+  } catch (err) {
     setError('Something went wrong. Please try again.');
+    console.error('Form submission error:', err);
   } finally {
     setIsSending(false);
   }
