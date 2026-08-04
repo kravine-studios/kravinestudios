@@ -28,35 +28,47 @@ export default function Contact() {
   setError('');
   setIsSending(true);
 
+  const formPayload = {
+    access_key: 'd08575c4-b240-4f7b-849e-1d733620cf2d',
+    subject: `New Contact from ${formData.name} - Kravine Studios`,
+    from_name: formData.name,
+    email: formData.email,
+    phone: formData.phone || 'Not provided',
+    service: formData.service || 'Not specified',
+    message: formData.message,
+    replyto: formData.email,
+  };
+
+  console.log('🚀 Submitting form with payload:', formPayload);
+
   try {
     const response = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        access_key: 'd08575c4-b240-4f7b-849e-1d733620cf2d',
-        subject: `New message from ${formData.name} — Kravine Studios`,
-        from_name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        service: formData.service,
-        message: formData.message,
-        replyto: formData.email,
-      }),
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(formPayload),
     });
 
+    console.log('📡 Response status:', response.status, response.statusText);
+    
     const result = await response.json();
+    console.log('📨 Response data:', result);
 
     if (response.ok && result.success) {
       setIsSubmitted(true);
-      setTimeout(() => setIsSubmitted(false), 3000);
       setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+      setTimeout(() => setIsSubmitted(false), 5000);
+      console.log('✅ Form submitted successfully!');
     } else {
-      setError(result.message || 'Something went wrong. Please try again.');
-      console.error('Form submission error:', result);
+      const errorMsg = result.message || 'Failed to send message. Please try again.';
+      setError(errorMsg);
+      console.error('❌ Form submission failed:', result);
     }
   } catch (err) {
-    setError('Something went wrong. Please try again.');
-    console.error('Form submission error:', err);
+    setError('Network error. Please check your connection and try again.');
+    console.error('❌ Fetch error:', err);
   } finally {
     setIsSending(false);
   }
