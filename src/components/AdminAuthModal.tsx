@@ -19,98 +19,65 @@ export default function AdminAuthModal({ isOpen, onClose, onLogin }: AdminAuthMo
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
-
-    // Password is verified by Supabase's servers here — it never lives in
-    // this website's code or bundle, unlike the old hardcoded check.
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setIsSubmitting(false);
-
-    if (signInError) {
-      setError('Invalid credentials. Please try again.');
-      return;
-    }
-
+    if (signInError) { setError('Invalid credentials. Please try again.'); return; }
     onLogin();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      ></div>
-
-      {/* Modal */}
-      <div className="relative w-full max-w-md bg-[#12121a] border border-purple-500/30 rounded-3xl overflow-hidden shadow-2xl shadow-purple-900/50 animate-fade-in-up">
+    <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)' }} onClick={onClose} />
+      <div style={{
+        position: 'relative', width: '100%', maxWidth: '380px',
+        background: '#0f1729', border: '1px solid #1e2d4a', borderRadius: '10px',
+        boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
+      }}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center">
-              <Lock className="w-5 h-5 text-white" />
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #1e2d4a', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '32px', height: '32px', background: 'rgba(47,128,237,0.12)', border: '1px solid rgba(47,128,237,0.2)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Lock size={14} color="#2F80ED" />
             </div>
             <div>
-              <h3 className="text-white font-bold text-lg">Admin Authentication</h3>
-              <p className="text-gray-400 text-sm">Sign in to enable edit mode</p>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#f0f4ff' }}>Admin access</div>
+              <div style={{ fontSize: '12px', color: '#3a4a6a' }}>Sign in to edit content</div>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all"
-          >
-            <X size={18} />
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#3a4a6a', padding: '4px', display: 'flex' }}>
+            <X size={16} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleLogin} className="p-6 space-y-4">
+        <form onSubmit={handleLogin} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setError(''); }}
-              placeholder="admin@example.com"
-              className="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all"
-            />
+            <label style={{ display: 'block', fontSize: '11px', fontWeight: 500, color: '#7a8aaa', marginBottom: '6px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Email</label>
+            <input type="email" required value={email} placeholder="admin@example.com"
+              onChange={e => { setEmail(e.target.value); setError(''); }}
+              className="field" />
           </div>
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              required
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setError(''); }}
-              placeholder="••••••••"
-              className="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all pr-12"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors p-1"
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          <div style={{ position: 'relative' }}>
+            <label style={{ display: 'block', fontSize: '11px', fontWeight: 500, color: '#7a8aaa', marginBottom: '6px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Password</label>
+            <input type={showPassword ? 'text' : 'password'} required value={password} placeholder="••••••••"
+              onChange={e => { setPassword(e.target.value); setError(''); }}
+              className="field" style={{ paddingRight: '44px' }} />
+            <button type="button" onClick={() => setShowPassword(v => !v)}
+              style={{ position: 'absolute', right: '12px', bottom: '10px', background: 'none', border: 'none', cursor: 'pointer', color: '#3a4a6a', display: 'flex' }}>
+              {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
-
           {error && (
-            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            <div style={{ padding: '10px 14px', borderRadius: '6px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: '13px', color: '#fca5a5' }}>
               {error}
             </div>
           )}
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold text-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-green-500/25 transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            <Lock className="w-5 h-5" />
-            {isSubmitting ? 'Signing In…' : 'Sign In'}
+          <button type="submit" disabled={isSubmitting} className="btn btn-fill"
+            style={{ width: '100%', justifyContent: 'center', padding: '12px', opacity: isSubmitting ? 0.6 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
+            <Lock size={14} />
+            {isSubmitting ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
       </div>

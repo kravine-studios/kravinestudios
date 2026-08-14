@@ -3,20 +3,19 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
 
-if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-  console.warn(
-    '⚠️ Missing Supabase env vars. Using placeholder values. Admin features will not work.'
-  );
+const isConfigured = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
+
+if (!isConfigured) {
+  console.warn('⚠️ Missing Supabase env vars. Admin features will not work.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Site content is stored as one row per section in the `site_content` table:
-// key: 'projects' | 'team' | 'stats' | 'social'
-// value: jsonb blob holding that section's data
 export type ContentKey = 'projects' | 'team' | 'stats' | 'social';
 
 export async function fetchContent<T>(key: ContentKey, fallback: T): Promise<T> {
+  if (!isConfigured) return fallback;
+
   const { data, error } = await supabase
     .from('site_content')
     .select('value')

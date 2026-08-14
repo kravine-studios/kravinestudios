@@ -1,116 +1,136 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, ChevronUp } from 'lucide-react';
-import Logo from './Logo';
+import { Menu, X } from 'lucide-react';
 
 interface NavbarProps {
   isAuthenticated?: boolean;
   onToggleEdit?: () => void;
 }
 
+const navLinks = [
+  { name: 'Services', href: '#services' },
+  { name: 'About', href: '#about' },
+  { name: 'Portfolio', href: '#portfolio' },
+  { name: 'Team', href: '#team' },
+  { name: 'Contact', href: '#contact' },
+];
+
 export default function Navbar({ isAuthenticated, onToggleEdit }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-      setShowScrollTop(window.scrollY > 500);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Services', href: '#services' },
-    { name: 'About', href: '#about' },
-    { name: 'Portfolio', href: '#portfolio' },
-    { name: 'Team', href: '#team' },
-    { name: 'Contact', href: '#contact' },
-  ];
-
   return (
-    <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'glass shadow-2xl shadow-purple-900/10 py-3'
-            : 'bg-transparent py-5'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <a href="#home" className="group">
-              <Logo size="lg" className="group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_25px_rgba(59,165,246,0.5)]" />
-            </a>
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      style={{
+        background: scrolled ? 'rgba(15, 23, 42, 0.92)' : '#0f172a',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(194, 214, 247, 0.18)' : '1px solid transparent',
+      }}
+    >
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          {/* Logo */}
+          <a href="#home" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+            <img
+              src="/kravine-logo-new.png"
+              alt="Kravine Studios"
+              style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+            />
+          </a>
 
-            <div className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
-                >
-                  {link.name}
-                </a>
-              ))}
-              <a
-                href="#contact"
-                className="ml-4 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:-translate-y-0.5"
-              >
-                Get Started
-              </a>
-              {isAuthenticated && (
-                <button
-                  onClick={onToggleEdit}
-                  className="ml-2 px-4 py-2.5 bg-green-500/20 border border-green-500/30 text-green-400 text-sm font-semibold rounded-xl hover:bg-green-500/30 transition-all duration-300"
-                >
-                  ✏️ Edit Mode
-                </button>
-              )}
-            </div>
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {isOpen && (
-          <div className="lg:hidden mt-2 mx-4 glass rounded-2xl p-4 animate-slide-down">
-            {navLinks.map((link) => (
+          {/* Desktop links */}
+          <div className="hidden lg:flex" style={{ alignItems: 'center', gap: '4px' }}>
+            {navLinks.map(link => (
               <a
                 key={link.name}
                 href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200"
+                style={{
+                  padding: '6px 14px',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  color: '#cbd5e1',
+                  borderRadius: '6px',
+                  textDecoration: 'none',
+                  transition: 'color 0.15s ease',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}
               >
                 {link.name}
               </a>
             ))}
-            <a
-              href="#contact"
-              onClick={() => setIsOpen(false)}
-              className="block mt-3 px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-center font-semibold rounded-xl"
-            >
+          </div>
+
+          {/* Right side */}
+          <div className="hidden lg:flex" style={{ alignItems: 'center', gap: '12px' }}>
+            {isAuthenticated && (
+              <button
+                onClick={onToggleEdit}
+                style={{
+                  padding: '6px 14px', fontSize: '13px', fontWeight: 500,
+                  color: '#dbeafe', background: 'rgba(37, 99, 235, 0.12)',
+                  border: '1px solid rgba(147, 197, 253, 0.4)', borderRadius: '6px', cursor: 'pointer',
+                }}
+              >
+                ✏️ Edit
+              </button>
+            )}
+            <a href="#contact" className="btn btn-fill" style={{ padding: '9px 20px', fontSize: '14px' }}>
               Get Started
             </a>
           </div>
-        )}
-      </nav>
 
-      {showScrollTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/25 hover:-translate-y-1 transition-all duration-300 animate-fade-in"
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setIsOpen(v => !v)}
+            className="lg:hidden"
+            style={{ background: 'none', border: 'none', color: '#e2e8f0', cursor: 'pointer', padding: '6px' }}
+            aria-label="Toggle navigation"
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {isOpen && (
+        <div
+          className="lg:hidden slide-down"
+          style={{
+            background: '#0f172a',
+            borderTop: '1px solid rgba(194, 214, 247, 0.18)',
+            padding: '12px 24px 20px',
+          }}
         >
-          <ChevronUp size={20} />
-        </button>
+          {navLinks.map(link => (
+            <a
+              key={link.name}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              style={{
+                display: 'block', padding: '11px 0', fontSize: '15px',
+                color: '#cbd5e1', borderBottom: '1px solid rgba(194, 214, 247, 0.12)', textDecoration: 'none',
+              }}
+            >
+              {link.name}
+            </a>
+          ))}
+          <a
+            href="#contact"
+            onClick={() => setIsOpen(false)}
+            className="btn btn-fill"
+            style={{ display: 'block', textAlign: 'center', marginTop: '16px', width: '100%', justifyContent: 'center' }}
+          >
+            Get Started
+          </a>
+        </div>
       )}
-    </>
+    </nav>
   );
 }

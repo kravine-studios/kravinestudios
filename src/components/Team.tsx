@@ -1,88 +1,94 @@
 import { useEffect, useRef, useState } from 'react';
-import { Video, Shield, Code, PenTool, Camera, BarChart, Globe, Wrench } from 'lucide-react';
+import { Video, Shield, Code, PenTool, Camera, BarChart, Globe, Wrench, Megaphone } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
-  Video,
-  Shield,
-  Code,
-  PenTool,
-  Camera,
-  BarChart,
-  Globe,
-  Wrench,
+  Video, Shield, Code, PenTool, Camera, BarChart, Globe, Wrench, Megaphone,
 };
 
 interface TeamMember {
-  name: string;
-  role: string;
-  description: string;
-  icon: string;
-  gradient: string;
+  name: string; role: string; description: string; icon: string; gradient: string;
 }
+interface TeamProps { team: TeamMember[]; }
 
-interface TeamProps {
-  team: TeamMember[];
+function useReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.08 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, visible };
 }
 
 export default function Team({ team }: TeamProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
+  const { ref, visible } = useReveal();
   if (team.length === 0) return null;
 
   return (
-    <section id="team" className="relative py-24 sm:py-32 overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/5 rounded-full blur-3xl"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16" ref={ref}>
-          <span className="inline-block px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-4">
-            Our Team
-          </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
-            Meet The <span className="gradient-text">Experts</span>
-          </h2>
-          <p className="max-w-2xl mx-auto text-gray-400 text-lg">
-            Our talented team of professionals brings diverse skills and creative energy to every project.
-          </p>
+    <section id="team" style={{ padding: '96px 0', background: '#ffffff', borderTop: '1px solid #e2e8f4' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <div ref={ref} style={{ marginBottom: '48px' }}>
+          <p className="eyebrow" style={{ marginBottom: '14px' }}>Who we are</p>
+          <h2 className="section-heading">The people behind the work</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {team.map((member, index) => {
-            const IconComponent = iconMap[member.icon] || Code;
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '10px',
+        }}>
+          {team.slice(0, 6).map((member, i) => {
+            const Icon = iconMap[member.icon] || Code;
             return (
               <div
-                key={member.name + index}
-                className={`group relative p-6 rounded-2xl bg-dark-card border border-white/5 hover:border-purple-500/30 transition-all duration-500 hover:-translate-y-2 text-center ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
+                key={member.name + i}
+                className={`reveal${visible ? ' in' : ''}`}
+                style={{
+                  background: '#f4f7ff',
+                  border: '1px solid #e2e8f4',
+                  borderRadius: '10px',
+                  padding: '16px 20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  transitionDelay: `${i * 40}ms`,
+                  transition: 'border-color 0.15s ease, transform 0.15s ease, opacity 0.5s ease',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = '#c7d4ed';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = '#e2e8f4';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${member.gradient} mx-auto mb-5 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
-                  <IconComponent className="w-10 h-10 text-white" />
+                {/* Avatar */}
+                <div style={{
+                  width: '40px', height: '40px', flexShrink: 0,
+                  background: 'rgba(37, 99, 235, 0.08)',
+                  border: '1px solid rgba(37, 99, 235, 0.15)',
+                  borderRadius: '8px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Icon size={18} color="#2563eb" />
                 </div>
 
-                <h3 className="text-lg font-bold text-white mb-1">{member.name}</h3>
-                <p className="text-sm text-purple-400 font-medium mb-3">{member.role}</p>
-                <p className="text-xs text-gray-500 leading-relaxed">{member.description}</p>
+                {/* Name + role */}
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {member.name}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {member.role}
+                  </div>
+                </div>
               </div>
             );
           })}

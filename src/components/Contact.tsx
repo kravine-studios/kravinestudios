@@ -1,189 +1,196 @@
 import { useEffect, useRef, useState } from 'react';
-import { Send, MessageSquare } from 'lucide-react';
+import { Send } from 'lucide-react';
+
+function useReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.08 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, visible };
+}
 
 export default function Contact() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const { ref, visible } = useReveal();
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', service: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState('');
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1 }
-    );
+  const [emailError, setEmailError] = useState('');
 
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError('');
-  setIsSending(true);
-
-  const formPayload = {
-    access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || 'd08575c4-b240-4f7b-849e-1d733620cf2d',
-    subject: `New Contact from ${formData.name} - Kravine Studios`,
-    from_name: formData.name,
-    email: formData.email,
-    phone: formData.phone || 'Not provided',
-    service: formData.service || 'Not specified',
-    message: formData.message,
-    replyto: formData.email,
+  const validateEmail = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return 'Email is required.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(trimmed)) {
+      return 'Please enter a valid email address.';
+    }
+    return '';
   };
 
-  console.log('🚀 Submitting form with payload:', formPayload);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
 
-  try {
-    const response = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(formPayload),
-    });
+    const emailToValidate = formData.email.trim();
+    const nextEmailError = validateEmail(emailToValidate);
+    setEmailError(nextEmailError);
 
-    console.log('📡 Response status:', response.status, response.statusText);
-    
-    const result = await response.json();
-    console.log('📨 Response data:', result);
-
-    if (response.ok && result.success) {
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
-      setTimeout(() => setIsSubmitted(false), 5000);
-      console.log('✅ Form submitted successfully!');
-    } else {
-      const errorMsg = result.message || 'Failed to send message. Please try again.';
-      setError(errorMsg);
-      console.error('❌ Form submission failed:', result);
+    if (nextEmailError) {
+      return;
     }
-  } catch (err) {
-    setError('Network error. Please check your connection and try again.');
-    console.error('❌ Fetch error:', err);
-  } finally {
-    setIsSending(false);
-  }
-};
+
+    setIsSending(true);
+    const payload = {
+      access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || 'd08575c4-b240-4f7b-849e-1d733620cf2d',
+      subject: `New contact from ${formData.name} – Kravine Studios`,
+      from_name: formData.name,
+      email: emailToValidate,
+      phone: formData.phone || 'Not provided',
+      service: formData.service || 'Not specified',
+      message: formData.message,
+      replyto: emailToValidate,
+    };
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIsSubmitted(true);
+        setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        setError(data.message || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setError('Network error. Check your connection and try again.');
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const label = (text: string) => (
+    <label style={{ display: 'block', fontSize: '12px', fontWeight: 500, color: '#64748b', marginBottom: '7px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+      {text}
+    </label>
+  );
 
   return (
-    <section id="contact" className="relative py-24 sm:py-32 overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-purple-600/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16" ref={ref}>
-          <span className="inline-block px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-4">
-            Get In Touch
-          </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
-            Let's <span className="gradient-text">Talk</span>
+    <section id="contact" style={{ padding: '96px 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
+      <div style={{ maxWidth: '720px', margin: '0 auto', padding: '0 24px' }}>
+        <div ref={ref} style={{ marginBottom: '48px' }}>
+          <p className="eyebrow" style={{ marginBottom: '14px' }}>Start a project</p>
+          <h2 className="section-heading" style={{ marginBottom: '16px' }}>
+            Tell us what you need
           </h2>
-          <p className="max-w-2xl mx-auto text-gray-400 text-lg">
-            Have a project in mind? We'd love to hear about it. Send us a message and we'll get back to you within 24 hours.
+          <p style={{ fontSize: '16px', color: '#64748b', lineHeight: 1.65 }}>
+            Send us a message and we'll follow up within 24 hours with a clear plan and honest pricing.
           </p>
         </div>
 
-        <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <form onSubmit={handleSubmit} className="p-8 rounded-2xl bg-dark-card border border-white/5">
+        <div className={`reveal${visible ? ' in' : ''}`}>
+          <form
+            onSubmit={handleSubmit}
+            style={{ background: '#ffffff', border: '1px solid #e2e8f4', borderRadius: '10px', padding: '40px' }}
+          >
             {isSubmitted && (
-              <div className="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm flex items-center gap-2">
-                <MessageSquare className="w-5 h-5" />
-                Message sent successfully! We'll get back to you soon.
+              <div style={{ marginBottom: '24px', padding: '14px 16px', borderRadius: '6px', background: 'rgba(37, 99, 235, 0.08)', border: '1px solid rgba(37, 99, 235, 0.2)', fontSize: '14px', color: '#1d4ed8' }}>
+                Message sent. We'll be in touch soon.
               </div>
-            )}{error && (
-              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            )}
+            {error && (
+              <div style={{ marginBottom: '24px', padding: '14px 16px', borderRadius: '6px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: '14px', color: '#b91c1c' }}>
                 {error}
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }} className="form-row">
               <div>
-                <label className="block text-sm text-gray-400 mb-2 font-medium">Full Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Your name"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all duration-300"
-                />
+                {label('Full Name *')}
+                <input type="text" required value={formData.name} placeholder="Your name"
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  className="field" />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-2 font-medium">Email *</label>
+                {label('Email *')}
                 <input
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="your@email.com"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all duration-300"
+                  placeholder="you@email.com"
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData({ ...formData, email: value });
+                    setEmailError(validateEmail(value));
+                  }}
+                  onBlur={() => setEmailError(validateEmail(formData.email))}
+                  className="field"
+                  aria-invalid={Boolean(emailError)}
+                  aria-describedby={emailError ? 'email-error' : undefined}
                 />
+                {emailError && (
+                  <div id="email-error" style={{ marginTop: '8px', fontSize: '12px', color: '#b91c1c' }}>
+                    {emailError}
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }} className="form-row">
               <div>
-                <label className="block text-sm text-gray-400 mb-2 font-medium">Phone (Optional)</label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+91 XXXXX XXXXX"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all duration-300"
-                />
+                {label('Phone')}
+                <input type="tel" value={formData.phone} placeholder="+91 XXXXX XXXXX"
+                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                  className="field" />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-2 font-medium">Service Needed</label>
-                <select
-                  value={formData.service}
-                  onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all duration-300"
-                >
-                  <option value="" className="bg-dark">Select a service</option>
-                  <option value="video" className="bg-dark">Video Editing</option>
-                  <option value="cyber" className="bg-dark">Cyber Safety</option>
-                  <option value="tech" className="bg-dark">IT Consultant</option>
-                  <option value="web" className="bg-dark">Web Development</option>
-                  <option value="social" className="bg-dark">Social Media Marketing</option>
-                  <option value="analytics" className="bg-dark">Business Analytics</option>
+                {label('Service')}
+                <select value={formData.service} onChange={e => setFormData({ ...formData, service: e.target.value })} className="field">
+                  <option value="">Select a service</option>
+                  <option value="video">Video Editing</option>
+                  <option value="cyber">Cyber Safety</option>
+                  <option value="tech">IT Consultant</option>
+                  <option value="web">Web Development</option>
+                  <option value="social">Social Media</option>
+                  <option value="analytics">Business Analytics</option>
                 </select>
               </div>
             </div>
 
-            <div className="mb-6">
-              <label className="block text-sm text-gray-400 mb-2 font-medium">Message *</label>
-              <textarea
-                required
-                rows={5}
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Tell us about your project..."
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all duration-300 resize-none"
-              />
+            <div style={{ marginBottom: '28px' }}>
+              {label('Message *')}
+              <textarea required rows={5} value={formData.message} placeholder="Tell us about your project…"
+                onChange={e => setFormData({ ...formData, message: e.target.value })}
+                className="field" style={{ resize: 'none' }} />
             </div>
 
             <button
               type="submit"
               disabled={isSending}
-              className="w-full btn-primary py-4 rounded-xl text-white font-semibold text-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn btn-fill"
+              style={{ width: '100%', justifyContent: 'center', padding: '14px 24px', fontSize: '15px', opacity: isSending ? 0.6 : 1, cursor: isSending ? 'not-allowed' : 'pointer' }}
             >
-              <Send className="w-5 h-5" />
-              {isSending ? 'Sending...' : 'Send Message'}
+              <Send size={15} />
+              {isSending ? 'Sending…' : 'Send message'}
             </button>
           </form>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 560px) {
+          .form-row { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }
