@@ -30,6 +30,16 @@ export default function Team({ team }: TeamProps) {
   const { ref, visible } = useReveal();
   if (team.length === 0) return null;
 
+  const sortedTeam = [...team].sort((a, b) => a.name.localeCompare(b.name));
+  const roleIconMap: Record<string, string> = {
+    'Marketing Strategist': 'BarChart',
+    'Software Engineer': 'Code',
+    'Video Director': 'Video',
+    'Growth Manager': 'Megaphone',
+    'Security Specialist': 'Shield',
+    'IT Consultant': 'Wrench',
+  };
+
   return (
     <section id="team" style={{ padding: '96px 0', background: '#ffffff', borderTop: '1px solid #e2e8f4' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
@@ -43,8 +53,9 @@ export default function Team({ team }: TeamProps) {
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '10px',
         }}>
-          {team.slice(0, 6).map((member, i) => {
-            const Icon = iconMap[member.icon] || Code;
+          {sortedTeam.slice(0, 6).map((member, i) => {
+            const iconKey = member.icon || roleIconMap[member.role] || 'Code';
+            const Icon = iconMap[iconKey] || Code;
             return (
               <div
                 key={member.name + i}
