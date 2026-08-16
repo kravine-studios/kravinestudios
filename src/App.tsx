@@ -33,10 +33,9 @@ const defaultStats = [
 ];
 
 const defaultSocialLinks = {
-  instagram: '',
-  linkedin: '',
+  instagram: 'https://www.instagram.com/kravine.studios?igsh=MWR3anprNXZxYndnMQ==&igsi=MWR3anprNXZxYndnMQ==',
+  linkedin: 'https://www.linkedin.com/company/kravine-studios/',
 };
-
 export default function App() {
   // Admin panel is temporarily disabled. Kept commented out for easy re-enabling later.
   const [isAuthenticated, setIsAuthenticated] = useState(false);
