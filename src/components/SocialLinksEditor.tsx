@@ -71,14 +71,14 @@ export default function SocialLinksEditor({ isOpen, onClose, links, onSave }: So
               </div>
               <div>
                 <h4 className="text-white font-semibold text-sm">Instagram</h4>
-                <p className="text-gray-500 text-xs">Paste your Instagram profile URL</p>
+                <p className="text-gray-500 text-xs">https://www.instagram.com/kravine.studios?igsh=MWR3anprNXZxYndnMQ==&igsi=MWR3anprNXZxYndnMQ==</p>
               </div>
             </div>
             <input
               type="url"
               value={localLinks.instagram}
               onChange={(e) => setLocalLinks({ ...localLinks, instagram: e.target.value })}
-              placeholder="https://instagram.com/yourhandle"
+              placeholder="https://www.instagram.com/kravine.studios?igsh=MWR3anprNXZxYndnMQ==&igsi=MWR3anprNXZxYndnMQ=="
               className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all"
             />
             {localLinks.instagram && (
@@ -102,14 +102,14 @@ export default function SocialLinksEditor({ isOpen, onClose, links, onSave }: So
               </div>
               <div>
                 <h4 className="text-white font-semibold text-sm">LinkedIn</h4>
-                <p className="text-gray-500 text-xs">Paste your LinkedIn profile URL</p>
+                <p className="text-gray-500 text-xs">https://www.linkedin.com/company/kravine-studios/</p>
               </div>
             </div>
             <input
               type="url"
               value={localLinks.linkedin}
               onChange={(e) => setLocalLinks({ ...localLinks, linkedin: e.target.value })}
-              placeholder="https://linkedin.com/in/yourprofile"
+              placeholder="https://www.linkedin.com/company/kravine-studios/"
               className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25 transition-all"
             />
             {localLinks.linkedin && (
