@@ -16,7 +16,7 @@ function useReveal() {
 const values = [
   "We scope projects honestly and don't upsell what you don't need.",
   'Every service comes with a dedicated point of contact — not a ticket queue.',
-  "We're based in Mira Road. You can walk in, call, or message us.",
+  "Ready to upgrade your digital presence? Book a call or send us a message to get started.",
 ];
 
 export default function About() {
@@ -29,10 +29,10 @@ export default function About() {
           <div className={`reveal${visible ? ' in' : ''}`}>
             <p className="eyebrow" style={{ marginBottom: '14px' }}>About Kravine Studios</p>
             <h2 className="section-heading" style={{ marginBottom: '24px' }}>
-              A local studio that delivers like a bigger agency
+              Full-Service Digital Solutions Built to Scale
             </h2>
             <p style={{ fontSize: '16px', color: '#64748b', lineHeight: 1.75, marginBottom: '16px' }}>
-              We're a full-service IT studio based in Mira Road, Maharashtra. We work with shops, schools, offices, and growing businesses who need professional digital work without enterprise-level complexity or pricing.
+              We are a full-service digital studio. We deliver complete digital transformations, from custom web software to targeted media production, tailored to streamline your operations and elevate your brand.
             </p>
             <p style={{ fontSize: '16px', color: '#64748b', lineHeight: 1.75, marginBottom: '36px' }}>
               Our team brings video production, web development, cybersecurity, and marketing together in one place, so you don't have to manage four different agencies.
