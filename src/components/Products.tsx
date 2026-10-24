@@ -179,7 +179,7 @@ export default function Products() {
   const { ref, visible } = useReveal();
 
   return (
-    <section id="products" style={{ padding: '96px 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
+    <section id="products" style={{ padding: '96px 0', background: '#ffffff', borderTop: '1px solid #e2e8f4' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
         <div ref={ref} style={{ maxWidth: '620px', marginBottom: '48px' }}>
           <p className="eyebrow" style={{ marginBottom: '14px' }}>Product concepts</p>
@@ -193,7 +193,7 @@ export default function Products() {
               <article
                 key={product.name}
                 className={`reveal${visible ? ' in' : ''}`}
-                style={{ background: '#ffffff', border: '1px solid #e2e8f4', borderRadius: '8px', overflow: 'hidden', transitionDelay: `${index * 45}ms` }}
+                style={{ background: '#f4f7ff', border: '1px solid #e2e8f4', borderRadius: '8px', overflow: 'hidden', transitionDelay: `${index * 45}ms` }}
               >
                 <div style={{ position: 'relative' }}>
                   <ProductPreview kind={product.preview} accent={product.accent} image={product.image} name={product.name} />

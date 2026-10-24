@@ -21,8 +21,9 @@ export default function Hero() {
   return (
     <section
       id="home"
+      className="hero-section"
       style={{
-        minHeight: '100vh',
+        minHeight: '620px',
         display: 'flex',
         alignItems: 'center',
         paddingTop: '64px',
@@ -88,9 +89,13 @@ export default function Hero() {
             View our work
           </a>
         </div>
-
-
       </div>
+
+      <style>{`
+        @media (max-width: 600px) {
+          #home.hero-section { min-height: 560px !important; }
+        }
+      `}</style>
     </section>
   );
 }
