@@ -1,4 +1,4 @@
-import { Film, Shield, Wrench, Globe, Megaphone, BarChart3 } from 'lucide-react';
+import { Film, Shield, Wrench, Globe, Workflow, BarChart3 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 const services = [
@@ -27,9 +27,9 @@ const services = [
     features: ['Custom Design', 'E-Commerce', 'SEO Optimised', 'Mobile First'],
   },
   {
-    icon: Megaphone,
-    title: 'Social Media',
-    description: 'Content and campaigns that build an audience over time — not just likes, but real business results.',
+    icon: Workflow,
+    title: 'SaaS Solutions',
+    description: 'Tailored software that streamlines workflows, improves customer experiences, and supports your business as it grows.',
     features: ['Content Strategy', 'Ad Campaigns', 'Analytics', 'Brand Growth'],
   },
   {

@@ -8,9 +8,9 @@ interface NavbarProps {
 
 const navLinks = [
   { name: 'Services', href: '#services' },
-  { name: 'Work', href: '#work' },
+  { name: 'Work', href: '#portfolio' },
   { name: 'About', href: '#about' },
-  { name: 'Team', href: '#team' },
+  { name: 'Products', href: '#products' },
   { name: 'Contact', href: '#contact' },
 ];
 

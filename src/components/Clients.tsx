@@ -6,7 +6,7 @@ const clients = [
 
 export default function Clients() {
   return (
-    <section id="portfolio" style={{ padding: '96px 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
+    <section id="clients" style={{ padding: '96px 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
         <div style={{ marginBottom: '56px' }}>
           <p className="eyebrow" style={{ marginBottom: '14px' }}>Clients</p>

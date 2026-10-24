@@ -1,4 +1,4 @@
-import { Film, Shield, Globe, Megaphone, BarChart3, Mail, MapPin } from 'lucide-react';
+import { Film, Shield, Wrench, Globe, Workflow, BarChart3, Mail, MapPin } from 'lucide-react';
 
 const SocialIcons = {
   Instagram: () => (
@@ -36,11 +36,12 @@ export default function Footer({ socialLinks = { instagram: '', linkedin: '' } }
   const services = [
     { name: 'Video Editing', icon: Film },
     { name: 'Cyber Safety', icon: Shield },
+    { name: 'IT Consultant', icon: Wrench },
     { name: 'Web Development', icon: Globe },
-    { name: 'Social Media', icon: Megaphone },
+    { name: 'SaaS Solutions', icon: Workflow },
     { name: 'Business Analytics', icon: BarChart3 },
   ];
-  const quickLinks = ['Home', 'Services', 'About', 'Portfolio', 'Team', 'Contact'];
+  const quickLinks = ['Home', 'Services', 'About', 'Portfolio', 'Products', 'Contact'];
   const socials = [
     { Icon: SocialIcons.Instagram, href: socialLinks.instagram || '#', label: 'Instagram', active: !!socialLinks.instagram },
     { Icon: SocialIcons.LinkedIn, href: socialLinks.linkedin || '#', label: 'LinkedIn', active: !!socialLinks.linkedin },
