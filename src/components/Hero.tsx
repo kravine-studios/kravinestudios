@@ -53,9 +53,9 @@ export default function Hero() {
         }}
       />
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '48px 24px 56px', width: '100%' }}>
+      <div className="hero-content" style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
         {/* Headline */}
-        <h1 className="display" style={{ maxWidth: '780px', marginBottom: '28px' }}>
+        <h1 className="display hero-title" style={{ maxWidth: '860px', marginBottom: '28px' }}>
           We turn your{' '}
           <span
             style={{
@@ -80,7 +80,7 @@ export default function Hero() {
         </p>
 
         {/* CTAs */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '72px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           <a href="#services" className="btn btn-fill">
             See what we do
             <ArrowRight size={15} />
@@ -92,8 +92,10 @@ export default function Hero() {
       </div>
 
       <style>{`
+        #home .hero-title { font-size: clamp(48px, 7vw, 76px); }
         @media (max-width: 600px) {
           #home.hero-section { min-height: 560px !important; }
+          #home .hero-title { font-size: 46px; }
         }
       `}</style>
     </section>
