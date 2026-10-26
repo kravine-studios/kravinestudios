@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { BarChart3, CalendarDays, ContactRound, Package, Pill, ShieldCheck, Store, Workflow } from 'lucide-react';
+import { HeartPulse, Package, Pill, Store } from 'lucide-react';
 
 const products = [
   {
@@ -30,28 +30,13 @@ const products = [
     image: '/screenshots/saas/quick-stock.png',
   },
   {
-    name: 'ShieldDesk',
-    category: 'Security monitoring',
-    icon: ShieldCheck,
-    accent: '#15803d',
-    purpose: 'Surfaces device health and account security alerts in a single dashboard.',
-    preview: 'security',
-  },
-  {
-    name: 'SignalBoard',
-    category: 'Business analytics',
-    icon: BarChart3,
-    accent: '#0369a1',
-    purpose: 'Turns everyday sales and operations data into easy-to-read business reports.',
-    preview: 'analytics',
-  },
-  {
-    name: 'ClientLoop',
-    category: 'Customer relationship management',
-    icon: ContactRound,
-    accent: '#7c3aed',
-    purpose: 'Organizes customer details, conversations, and follow-up tasks in one workspace.',
-    preview: 'crm',
+    name: 'ClinicCare',
+    category: 'Clinic management',
+    icon: HeartPulse,
+    accent: '#0f766e',
+    purpose: 'Helps clinics manage appointments, patients, prescriptions, and daily operations in one workspace.',
+    preview: 'clinic',
+    image: '/screenshots/saas/clinicare.png',
   },
 ];
 
@@ -195,11 +180,8 @@ export default function Products() {
                 className={`reveal${visible ? ' in' : ''}`}
                 style={{ background: '#f4f7ff', border: '1px solid #e2e8f4', borderRadius: '8px', overflow: 'hidden', transitionDelay: `${index * 45}ms` }}
               >
-                <div style={{ position: 'relative' }}>
+                <div>
                   <ProductPreview kind={product.preview} accent={product.accent} image={product.image} name={product.name} />
-                  <span style={{ position: 'absolute', right: '20px', bottom: '20px', background: 'rgba(255,255,255,0.94)', border: '1px solid #e2e8f4', borderRadius: '4px', padding: '4px 7px', color: '#64748b', fontSize: '10px' }}>
-                    Sample preview
-                  </span>
                 </div>
 
                 <div style={{ padding: '22px 22px 24px' }}>
