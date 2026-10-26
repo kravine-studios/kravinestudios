@@ -3,7 +3,7 @@ import { HeartPulse, Package, Pill, Store } from 'lucide-react';
 
 const products = [
   {
-    name: 'BakeTrack',
+    name: 'Crust & Crumb',
     category: 'Bakery POS',
     icon: Store,
     accent: '#d97706',
