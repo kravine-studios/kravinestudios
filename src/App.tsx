@@ -8,13 +8,6 @@ import Products from './components/Products';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
-const defaultStats = [
-  { number: '50+', label: 'Projects Done' },
-  { number: '30+', label: 'Happy Clients' },
-  { number: '6', label: 'Services' },
-  { number: '24/7', label: 'Support' },
-];
-
 const defaultSocialLinks = {
   instagram: 'https://www.instagram.com/kravine.studios',
   linkedin: 'https://www.linkedin.com/company/kravine-studios/',
