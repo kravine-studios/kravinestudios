@@ -33,14 +33,14 @@ export default function Navbar({ isAuthenticated, onToggleEdit }: NavbarProps) {
         borderBottom: scrolled ? '1px solid rgba(194, 214, 247, 0.18)' : '1px solid transparent',
       }}
     >
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
-        <div style={{ height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)' }}>
+        <div style={{ minHeight: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {/* Logo */}
-          <a href="#home" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          <a href="#home" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, minWidth: 0 }}>
             <img
               src="/kravine-logo-new.png"
               alt="Kravine Studios"
-              style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+              style={{ height: 'clamp(28px, 3vw, 36px)', width: 'auto', objectFit: 'contain', maxWidth: '170px' }}
             />
           </a>
 
@@ -90,7 +90,7 @@ export default function Navbar({ isAuthenticated, onToggleEdit }: NavbarProps) {
           <button
             onClick={() => setIsOpen(v => !v)}
             className="lg:hidden"
-            style={{ background: 'none', border: 'none', color: '#e2e8f0', cursor: 'pointer', padding: '6px' }}
+            style={{ background: 'none', border: 'none', color: '#e2e8f0', cursor: 'pointer', padding: '6px 0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             aria-label="Toggle navigation"
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -105,7 +105,7 @@ export default function Navbar({ isAuthenticated, onToggleEdit }: NavbarProps) {
           style={{
             background: '#0f172a',
             borderTop: '1px solid rgba(194, 214, 247, 0.18)',
-            padding: '12px 24px 20px',
+            padding: '12px clamp(16px, 4vw, 24px) 20px',
           }}
         >
           {navLinks.map(link => (

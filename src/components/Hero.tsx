@@ -23,10 +23,11 @@ export default function Hero() {
       id="home"
       className="hero-section"
       style={{
-        minHeight: '620px',
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        paddingTop: '64px',
+        paddingTop: 'clamp(82px, 10vw, 108px)',
+        paddingBottom: 'clamp(28px, 5vw, 44px)',
         position: 'relative',
         overflow: 'hidden',
         background: '#ffffff',
@@ -53,9 +54,9 @@ export default function Hero() {
         }}
       />
 
-      <div className="hero-content" style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
+      <div className="hero-content" style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)', width: '100%' }}>
         {/* Headline */}
-        <h1 className="display hero-title" style={{ maxWidth: '860px', marginBottom: '28px' }}>
+        <h1 className="display hero-title" style={{ maxWidth: '760px', marginBottom: 'clamp(18px, 2vw, 24px)', lineHeight: 1.05 }}>
           We turn your{' '}
           <span
             style={{
@@ -67,35 +68,37 @@ export default function Hero() {
               opacity: fading ? 0 : 1,
               transform: fading ? 'translateY(6px)' : 'translateY(0)',
               transition: 'opacity 0.25s ease, transform 0.25s ease',
+              whiteSpace: 'nowrap',
             }}
           >
             {words[wordIndex]}
-          </span>
-          <br />into work that gets results.
+          </span>{' '}
+          into work that gets results.
         </h1>
 
         {/* Subhead */}
-        <p style={{ fontSize: '18px', color: '#64748b', maxWidth: '520px', lineHeight: 1.65, marginBottom: '40px', fontWeight: 300 }}>
+        <p style={{ fontSize: 'clamp(1rem, 1.7vw, 1.125rem)', color: '#64748b', maxWidth: '560px', lineHeight: 1.65, marginBottom: 'clamp(22px, 3vw, 36px)', fontWeight: 300 }}>
           Video editing, web development, cyber safety, and digital marketing, all under one roof and built for local businesses that want to grow.
         </p>
 
         {/* CTAs */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-          <a href="#services" className="btn btn-fill">
+        <div className="hero-cta" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+          <a href="#services" className="btn btn-fill" style={{ minWidth: 0 }}>
             See what we do
             <ArrowRight size={15} />
           </a>
-          <a href="#portfolio" className="btn btn-outline">
+          <a href="#portfolio" className="btn btn-outline" style={{ minWidth: 0 }}>
             View our work
           </a>
         </div>
       </div>
 
       <style>{`
-        #home .hero-title { font-size: clamp(48px, 7vw, 76px); }
-        @media (max-width: 600px) {
-          #home.hero-section { min-height: 560px !important; }
-          #home .hero-title { font-size: 46px; }
+        .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+        .hero-cta .btn { min-width: 0; }
+        @media (max-width: 520px) {
+          .hero-cta { flex-direction: column; }
+          .hero-cta .btn { width: 100%; justify-content: center; }
         }
       `}</style>
     </section>

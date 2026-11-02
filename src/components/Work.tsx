@@ -30,8 +30,8 @@ export default function Work() {
   const { ref, visible } = useReveal();
 
   return (
-    <section id="portfolio" style={{ padding: '96px 0', background: '#ffffff', borderTop: '1px solid #e2e8f4' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+    <section id="portfolio" style={{ padding: 'clamp(72px, 12vw, 96px) 0', background: '#ffffff', borderTop: '1px solid #e2e8f4' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)' }}>
         <div style={{ marginBottom: '56px' }}>
           <p className="eyebrow" style={{ marginBottom: '14px' }}>Our work</p>
           <h2 className="section-heading" style={{ marginBottom: '12px' }}>Websites we've built</h2>
@@ -59,7 +59,7 @@ export default function Work() {
               onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f4f7ff'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#ffffff'; }}
             >
-              <div style={{ height: '240px', overflow: 'hidden', background: '#f4f7ff' }}>
+              <div style={{ height: 'clamp(180px, 28vw, 240px)', overflow: 'hidden', background: '#f4f7ff' }}>
                 <img
                   src={project.screenshot}
                   alt={project.title}
@@ -86,7 +86,7 @@ export default function Work() {
         </div>
       </div>
       <style>{`
-        @media (max-width: 600px) {
+        @media (max-width: 760px) {
           #portfolio .work-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>

@@ -164,8 +164,8 @@ export default function Products() {
   const { ref, visible } = useReveal();
 
   return (
-    <section id="products" style={{ padding: '96px 0', background: '#ffffff', borderTop: '1px solid #e2e8f4' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+    <section id="products" style={{ padding: 'clamp(72px, 12vw, 96px) 0', background: '#ffffff', borderTop: '1px solid #e2e8f4' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)' }}>
         <div ref={ref} style={{ maxWidth: '620px', marginBottom: '48px' }}>
           <p className="eyebrow" style={{ marginBottom: '14px' }}>Product concepts</p>
           <h2 className="section-heading" style={{ marginBottom: '14px' }}>Software built for everyday business</h2>
@@ -202,7 +202,7 @@ export default function Products() {
         </div>
       </div>
       <style>{`
-        @media (max-width: 600px) {
+        @media (max-width: 760px) {
           #products .products-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>

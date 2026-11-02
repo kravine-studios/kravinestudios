@@ -23,8 +23,8 @@ export default function About() {
   const { ref, visible } = useReveal();
 
   return (
-    <section id="about" style={{ padding: '96px 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+    <section id="about" style={{ padding: 'clamp(72px, 12vw, 96px) 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)' }}>
         <div ref={ref} style={{ maxWidth: '620px' }}>
           <div className={`reveal${visible ? ' in' : ''}`}>
             <p className="eyebrow" style={{ marginBottom: '14px' }}>About Kravine Studios</p>

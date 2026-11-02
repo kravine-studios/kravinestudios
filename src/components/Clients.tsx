@@ -6,8 +6,8 @@ const clients = [
 
 export default function Clients() {
   return (
-    <section id="clients" style={{ padding: '96px 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+    <section id="clients" style={{ padding: 'clamp(72px, 12vw, 96px) 0', background: '#f4f7ff', borderTop: '1px solid #e2e8f4' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)' }}>
         <div style={{ marginBottom: '56px' }}>
           <p className="eyebrow" style={{ marginBottom: '14px' }}>Clients</p>
           <h2 className="section-heading">Businesses we've worked with</h2>
@@ -26,11 +26,11 @@ export default function Clients() {
               key={i}
               style={{
                 background: '#ffffff',
-                height: '280px',
+                height: 'clamp(200px, 28vw, 280px)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '48px 64px',
+                padding: 'clamp(24px, 6vw, 64px)',
                 transition: 'background 0.15s ease',
               }}
               onMouseEnter={e => (e.currentTarget.style.background = '#f8fbff')}

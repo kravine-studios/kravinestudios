@@ -57,8 +57,8 @@ export default function Services() {
   const { ref, visible } = useReveal();
 
   return (
-    <section id="services" style={{ padding: '96px 0', background: '#ffffff' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+    <section id="services" style={{ padding: 'clamp(72px, 12vw, 96px) 0', background: '#ffffff' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div ref={ref} style={{ marginBottom: '56px', maxWidth: '520px' }}>
@@ -70,9 +70,10 @@ export default function Services() {
 
         {/* Grid */}
         <div
+          className="services-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
             gap: '1px',
             background: '#e2e8f4',
             borderRadius: '10px',
@@ -84,7 +85,7 @@ export default function Services() {
             return (
               <div
                 key={i}
-                className={`reveal${visible ? ' in' : ''}`}
+                className={`reveal service-card${visible ? ' in' : ''}`}
                 style={{
                   background: '#f4f7ff',
                   padding: '32px 28px',
@@ -98,6 +99,7 @@ export default function Services() {
               >
                 {/* Background number — the signature */}
                 <span
+                  className="service-number"
                   aria-hidden
                   style={{
                     position: 'absolute', bottom: '-8px', right: '16px',
@@ -126,6 +128,16 @@ export default function Services() {
           })}
         </div>
       </div>
+      <style>{`
+        @media (max-width: 920px) {
+          .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        }
+        @media (max-width: 640px) {
+          .services-grid { grid-template-columns: 1fr !important; }
+          .service-card { padding: 24px 20px !important; }
+          .service-number { font-size: 72px !important; }
+        }
+      `}</style>
     </section>
   );
 }
